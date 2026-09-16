@@ -1,0 +1,35 @@
+# Git & IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+
+# Node & Frontend build artifacts
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Temporary data / logs / local databases
+*.log
+logs/*
+data/traffic_intelligence.db
+data/raw/*.xml
+data/raw/*.csv
+data/results/*.csv
+data/results/*.json
+
+# OS specific files
+.DS_Store
+Thumbs.db
+desktop.ini

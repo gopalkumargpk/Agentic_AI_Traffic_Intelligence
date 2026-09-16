@@ -1,8 +1,9 @@
-# Agentic AI Traffic Intelligence
+# Agentic AI Traffic Intelligence — .gitignore
 
-# Python
+# Python Bytecode & Environments
 __pycache__/
 *.py[cod]
+*$py.class
 *.so
 *.egg
 *.egg-info/
@@ -14,38 +15,46 @@ build/
 venv/
 env/
 
-# Models (large files)
+# Database & SQLite Journals
+*.db
+*.db-journal
+data/traffic_intelligence.db
+data/traffic_intelligence.db-journal
+data/*.db
+data/*.db-journal
+
+# Runtime Generated Data & Logs
+data/raw/*
+data/results/*
+logs/*
+*.log
+
+# Models (large generated artifacts)
 models/*.pkl
 models/*.h5
 models/*.pt
 models/*.onnx
 
-# Data (generated)
-data/raw/*.xml
-data/raw/*.csv
-data/results/*.csv
-data/results/*.json
-data/*.db
-
-# SUMO outputs
+# SUMO Temporary Outputs
 *.xml.gz
 
-# Frontend
+# Frontend Build & Cache
 frontend/node_modules/
 frontend/dist/
 frontend/.vite/
 
-# Testing
+# Testing & Coverage
 .pytest_cache/
 .coverage
 htmlcov/
-*.log
 
-# IDE
+# IDE & Editor Settings
 .vscode/
 .idea/
 *.swp
+*.swo
 
-# Windows
+# OS Specific
+.DS_Store
 Thumbs.db
 desktop.ini
