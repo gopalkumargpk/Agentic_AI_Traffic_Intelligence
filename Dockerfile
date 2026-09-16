@@ -30,8 +30,7 @@ WORKDIR /app
 # Copy requirements and install Python dependencies (cached layer)
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt \
-    && pip install --no-cache-dir traci sumolib
+    && pip install --no-cache-dir -r requirements.txt
 
 # Copy the complete application codebase into the container
 COPY . /app/

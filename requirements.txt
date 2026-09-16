@@ -1,35 +1,19 @@
-# Agentic AI Traffic Intelligence — Python Dependencies
-# Install with: pip install -r requirements.txt
+# Agentic AI Traffic Intelligence — Production Dependencies
 
-# ============ Core Simulation ============
-# traci              # Included with SUMO installation (not on PyPI separately)
-#                    # Install SUMO first, then: pip install traci
-#                    # Or: pip install eclipse-sumo   (unofficial, may not include GUI)
-
-# ============ FastAPI Backend ============
+# FastAPI Backend
 fastapi>=0.111.0
-uvicorn[standard]>=0.29.0
+uvicorn>=0.29.0
 python-multipart>=0.0.9
 
-# ============ Database ============
+# Database
 sqlalchemy>=2.0.0
 
-# ============ Data & RL ============
+# Data
 numpy>=1.26.0
 
-# ============ Experiment / Utilities ============
+# Configuration
 python-dotenv>=1.0.0
 
-# ============ Testing ============
-pytest>=8.0.0
-pytest-asyncio>=0.23.0
-httpx>=0.27.0              # Required by FastAPI TestClient
-
-# ============ Optional: SUMO Python tools ============
-# If you install SUMO separately, also run:
-#   pip install traci sumolib
-# These are bundled with SUMO but can be installed independently.
-
-# ============ Dev tools ============
-# black            # code formatting (optional)
-# mypy             # type checking (optional)
+# SUMO / TraCI
+traci
+sumolib
