@@ -1,0 +1,51 @@
+# Agentic AI Traffic Intelligence
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.env
+.venv/
+venv/
+env/
+
+# Models (large files)
+models/*.pkl
+models/*.h5
+models/*.pt
+models/*.onnx
+
+# Data (generated)
+data/raw/*.xml
+data/raw/*.csv
+data/results/*.csv
+data/results/*.json
+data/*.db
+
+# SUMO outputs
+*.xml.gz
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Windows
+Thumbs.db
+desktop.ini

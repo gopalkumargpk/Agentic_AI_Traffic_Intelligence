@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SUMO Additional file: detectors for data collection
+  Induction loop detectors on each approach lane (for queue/count measurement)
+  Lane area detectors for queue-length measurement
+-->
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+
+    <!-- ==================== INDUCTION LOOP DETECTORS ==================== -->
+    <!-- North approach -->
+    <inductionLoop id="det_N_0" lane="N2C_0" pos="-50" period="30" file="../../data/raw/detectors.xml"/>
+    <inductionLoop id="det_N_1" lane="N2C_1" pos="-50" period="30" file="../../data/raw/detectors.xml"/>
+
+    <!-- South approach -->
+    <inductionLoop id="det_S_0" lane="S2C_0" pos="-50" period="30" file="../../data/raw/detectors.xml"/>
+    <inductionLoop id="det_S_1" lane="S2C_1" pos="-50" period="30" file="../../data/raw/detectors.xml"/>
+
+    <!-- East approach -->
+    <inductionLoop id="det_E_0" lane="E2C_0" pos="-50" period="30" file="../../data/raw/detectors.xml"/>
+    <inductionLoop id="det_E_1" lane="E2C_1" pos="-50" period="30" file="../../data/raw/detectors.xml"/>
+
+    <!-- West approach -->
+    <inductionLoop id="det_W_0" lane="W2C_0" pos="-50" period="30" file="../../data/raw/detectors.xml"/>
+    <inductionLoop id="det_W_1" lane="W2C_1" pos="-50" period="30" file="../../data/raw/detectors.xml"/>
+
+    <!-- ==================== LANE AREA DETECTORS (queue length) ==================== -->
+    <laneAreaDetector id="lad_N_0" lane="N2C_0" pos="-200" endPos="-5" period="30" file="../../data/raw/lad_detectors.xml"/>
+    <laneAreaDetector id="lad_N_1" lane="N2C_1" pos="-200" endPos="-5" period="30" file="../../data/raw/lad_detectors.xml"/>
+    <laneAreaDetector id="lad_S_0" lane="S2C_0" pos="-200" endPos="-5" period="30" file="../../data/raw/lad_detectors.xml"/>
+    <laneAreaDetector id="lad_S_1" lane="S2C_1" pos="-200" endPos="-5" period="30" file="../../data/raw/lad_detectors.xml"/>
+    <laneAreaDetector id="lad_E_0" lane="E2C_0" pos="-200" endPos="-5" period="30" file="../../data/raw/lad_detectors.xml"/>
+    <laneAreaDetector id="lad_E_1" lane="E2C_1" pos="-200" endPos="-5" period="30" file="../../data/raw/lad_detectors.xml"/>
+    <laneAreaDetector id="lad_W_0" lane="W2C_0" pos="-200" endPos="-5" period="30" file="../../data/raw/lad_detectors.xml"/>
+    <laneAreaDetector id="lad_W_1" lane="W2C_1" pos="-200" endPos="-5" period="30" file="../../data/raw/lad_detectors.xml"/>
+
+    <!-- ==================== E1 DETECTORS (stop bar, for waiting time) ==================== -->
+    <inductionLoop id="stopbar_N_0" lane="N2C_0" pos="-5" period="5" file="../../data/raw/stopbar.xml"/>
+    <inductionLoop id="stopbar_N_1" lane="N2C_1" pos="-5" period="5" file="../../data/raw/stopbar.xml"/>
+    <inductionLoop id="stopbar_S_0" lane="S2C_0" pos="-5" period="5" file="../../data/raw/stopbar.xml"/>
+    <inductionLoop id="stopbar_S_1" lane="S2C_1" pos="-5" period="5" file="../../data/raw/stopbar.xml"/>
+    <inductionLoop id="stopbar_E_0" lane="E2C_0" pos="-5" period="5" file="../../data/raw/stopbar.xml"/>
+    <inductionLoop id="stopbar_E_1" lane="E2C_1" pos="-5" period="5" file="../../data/raw/stopbar.xml"/>
+    <inductionLoop id="stopbar_W_0" lane="W2C_0" pos="-5" period="5" file="../../data/raw/stopbar.xml"/>
+    <inductionLoop id="stopbar_W_1" lane="W2C_1" pos="-5" period="5" file="../../data/raw/stopbar.xml"/>
+
+</additional>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SUMO Routes: Variable-demand traffic for 4-way intersection
+  Routes cover all 12 turning movements (straight through each approach).
+  Traffic flows are defined using flows with Poisson arrival process.
+  Density levels: LOW / MEDIUM / HIGH / ASYMMETRIC (heavy N-S)
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+
+    <!-- Vehicle types -->
+    <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="5" minGap="2.5" maxSpeed="13.89" guiShape="passenger"/>
+    <vType id="truck" accel="1.0" decel="3.0" sigma="0.5" length="12" minGap="3.0" maxSpeed="9.72" guiShape="truck"/>
+
+    <!-- ==================== ROUTES ==================== -->
+    <!-- North → South (straight through) -->
+    <route id="r_NS" edges="N2C C2S"/>
+    <!-- South → North (straight through) -->
+    <route id="r_SN" edges="S2C C2N"/>
+    <!-- East → West (straight through) -->
+    <route id="r_EW" edges="E2C C2W"/>
+    <!-- West → East (straight through) -->
+    <route id="r_WE" edges="W2C C2E"/>
+
+    <!-- North → East (right turn) -->
+    <route id="r_NE" edges="N2C C2E"/>
+    <!-- North → West (left turn) -->
+    <route id="r_NW" edges="N2C C2W"/>
+
+    <!-- South → East (left turn) -->
+    <route id="r_SE" edges="S2C C2E"/>
+    <!-- South → West (right turn) -->
+    <route id="r_SW" edges="S2C C2W"/>
+
+    <!-- East → North (left turn) -->
+    <route id="r_EN" edges="E2C C2N"/>
+    <!-- East → South (right turn) -->
+    <route id="r_ES" edges="E2C C2S"/>
+
+    <!-- West → North (right turn) -->
+    <route id="r_WN" edges="W2C C2N"/>
+    <!-- West → South (left turn) -->
+    <route id="r_WS" edges="W2C C2S"/>
+
+    <!-- ==================== TRAFFIC FLOWS (0-3600 s) ==================== -->
+    <!-- Adjust vehsPerHour to change traffic density:
+         LOW=100, MEDIUM=300, HIGH=600 per direction pair -->
+
+    <!-- === PHASE 1: LIGHT TRAFFIC (0 - 600 s) === -->
+    <flow id="f_NS_1"  route="r_NS" begin="0"    end="600"  vehsPerHour="120" type="car"   departLane="best" departSpeed="max"/>
+    <flow id="f_SN_1"  route="r_SN" begin="0"    end="600"  vehsPerHour="110" type="car"   departLane="best" departSpeed="max"/>
+    <flow id="f_EW_1"  route="r_EW" begin="0"    end="600"  vehsPerHour="100" type="car"   departLane="best" departSpeed="max"/>
+    <flow id="f_WE_1"  route="r_WE" begin="0"    end="600"  vehsPerHour="90"  type="car"   departLane="best" departSpeed="max"/>
+
+    <!-- === PHASE 2: MEDIUM TRAFFIC (600 - 1800 s) === -->
+    <flow id="f_NS_2"  route="r_NS" begin="600"  end="1800" vehsPerHour="350" type="car"   departLane="best" departSpeed="max"/>
+    <flow id="f_SN_2"  route="r_SN" begin="600"  end="1800" vehsPerHour="300" type="car"   departLane="best" departSpeed="max"/>
+    <flow id="f_EW_2"  route="r_EW" begin="600"  end="1800" vehsPerHour="280" type="car"   departLane="best" departSpeed="max"/>
+    <flow id="f_WE_2"  route="r_WE" begin="600"  end="1800" vehsPerHour="260" type="car"   departLane="best" departSpeed="max"/>
+
+    <!-- === PHASE 3: ASYMMETRIC PEAK (N-S heavy) (1800 - 2700 s) === -->
+    <flow id="f_NS_3"  route="r_NS" begin="1800" end="2700" vehsPerHour="600" type="car"   departLane="best" departSpeed="max"/>
+    <flow id="f_SN_3"  route="r_SN" begin="1800" end="2700" vehsPerHour="550" type="car"   departLane="best" departSpeed="max"/>
+    <flow id="f_EW_3"  route="r_EW" begin="1800" end="2700" vehsPerHour="200" type="car"   departLane="best" departSpeed="max"/>
+    <flow id="f_WE_3"  route="r_WE" begin="1800" end="2700" vehsPerHour="180" type="car"   departLane="best" departSpeed="max"/>
+
+    <!-- === PHASE 4: ASYMMETRIC PEAK (E-W heavy) (2700 - 3200 s) === -->
+    <flow id="f_NS_4"  route="r_NS" begin="2700" end="3200" vehsPerHour="150" type="car"   departLane="best" departSpeed="max"/>
+    <flow id="f_SN_4"  route="r_SN" begin="2700" end="3200" vehsPerHour="140" type="car"   departLane="best" departSpeed="max"/>
+    <flow id="f_EW_4"  route="r_EW" begin="2700" end="3200" vehsPerHour="580" type="car"   departLane="best" departSpeed="max"/>
+    <flow id="f_WE_4"  route="r_WE" begin="2700" end="3200" vehsPerHour="540" type="car"   departLane="best" departSpeed="max"/>
+
+    <!-- === PHASE 5: EVENING WIND-DOWN (3200 - 3600 s) === -->
+    <flow id="f_NS_5"  route="r_NS" begin="3200" end="3600" vehsPerHour="160" type="car"   departLane="best" departSpeed="max"/>
+    <flow id="f_SN_5"  route="r_SN" begin="3200" end="3600" vehsPerHour="150" type="car"   departLane="best" departSpeed="max"/>
+    <flow id="f_EW_5"  route="r_EW" begin="3200" end="3600" vehsPerHour="140" type="car"   departLane="best" departSpeed="max"/>
+    <flow id="f_WE_5"  route="r_WE" begin="3200" end="3600" vehsPerHour="130" type="car"   departLane="best" departSpeed="max"/>
+
+    <!-- Turning movements (lower volume, mixed throughout) -->
+    <flow id="f_NE" route="r_NE" begin="0" end="3600" vehsPerHour="80"  type="car" departLane="best" departSpeed="max"/>
+    <flow id="f_NW" route="r_NW" begin="0" end="3600" vehsPerHour="70"  type="car" departLane="best" departSpeed="max"/>
+    <flow id="f_SE" route="r_SE" begin="0" end="3600" vehsPerHour="75"  type="car" departLane="best" departSpeed="max"/>
+    <flow id="f_SW" route="r_SW" begin="0" end="3600" vehsPerHour="65"  type="car" departLane="best" departSpeed="max"/>
+    <flow id="f_EN" route="r_EN" begin="0" end="3600" vehsPerHour="70"  type="car" departLane="best" departSpeed="max"/>
+    <flow id="f_ES" route="r_ES" begin="0" end="3600" vehsPerHour="60"  type="car" departLane="best" departSpeed="max"/>
+    <flow id="f_WN" route="r_WN" begin="0" end="3600" vehsPerHour="65"  type="car" departLane="best" departSpeed="max"/>
+    <flow id="f_WS" route="r_WS" begin="0" end="3600" vehsPerHour="55"  type="car" departLane="best" departSpeed="max"/>
+
+    <!-- Trucks (sparse) -->
+    <flow id="f_truck_NS" route="r_NS" begin="0" end="3600" vehsPerHour="20" type="truck" departLane="best" departSpeed="0"/>
+    <flow id="f_truck_EW" route="r_EW" begin="0" end="3600" vehsPerHour="15" type="truck" departLane="best" departSpeed="0"/>
+
+</routes>
