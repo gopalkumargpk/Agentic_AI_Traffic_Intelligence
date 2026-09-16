@@ -57,7 +57,7 @@ from backend.models import (
     HistoryPoint, SimulationRunModel, SimulationStartRequest,
     ControllerModeRequest,
 )
-from simulation.sumo_runner import get_runner, is_sumo_available
+from simulation.sumo_runner import get_runner, is_sumo_available, verify_sumo_runtime
 from traffic_controller.fixed_controller import FixedController
 from traffic_controller.adaptive_controller import AdaptiveController
 from ai_agent.state import TrafficState
@@ -113,7 +113,14 @@ APP_STATE = AppState()
 async def lifespan(app: FastAPI):
     init_db()
     logger.info("Database initialised.")
-    logger.info(f"SUMO available: {is_sumo_available()}")
+    sumo_diag = verify_sumo_runtime(test_connection=True)
+    logger.info("--- SUMO Environment Verification ---")
+    logger.info(f"  Binary:     {sumo_diag.get('sumo_binary') or 'NOT FOUND'} (version: {sumo_diag.get('sumo_version')})")
+    logger.info(f"  SUMO_HOME:  {sumo_diag.get('sumo_home') or 'NOT SET'}")
+    logger.info(f"  TraCI:      {'Available' if sumo_diag.get('traci_available') else 'NOT AVAILABLE'} ({sumo_diag.get('traci_location')})")
+    logger.info(f"  Connection: {sumo_diag.get('connection_test')}")
+    logger.info(f"  Engine:     {'SUMO Simulation' if sumo_diag.get('ready') else 'Mock Simulation Fallback'}")
+    APP_STATE.using_mock = not sumo_diag.get("ready", False)
     yield
     # Cleanup on shutdown
     if APP_STATE.simulation_running:

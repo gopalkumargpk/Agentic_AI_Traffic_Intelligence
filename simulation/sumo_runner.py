@@ -27,8 +27,38 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
-# SUMO detection helpers
+# SUMO detection & environment setup
 # ---------------------------------------------------------------------------
+
+def _init_sumo_environment():
+    """Discover SUMO_HOME and inject tools directory into sys.path."""
+    if "SUMO_HOME" not in os.environ or not os.path.isdir(os.environ.get("SUMO_HOME", "")):
+        candidates = [
+            "/usr/share/sumo",
+            "/usr/local/share/sumo",
+            "/opt/sumo",
+            "/usr/lib/sumo",
+            r"C:\Program Files (x86)\Eclipse\Sumo",
+            r"C:\Program Files\Eclipse\Sumo",
+            r"C:\sumo",
+        ]
+        for c in candidates:
+            if os.path.isdir(c):
+                os.environ["SUMO_HOME"] = c
+                break
+
+    sumo_home = os.environ.get("SUMO_HOME", "")
+    if sumo_home:
+        tools = str(Path(sumo_home) / "tools")
+        if os.path.isdir(tools) and tools not in sys.path:
+            sys.path.insert(0, tools)
+
+    # Common Linux distribution package tool paths
+    for extra in ["/usr/share/sumo/tools", "/usr/local/share/sumo/tools"]:
+        if os.path.isdir(extra) and extra not in sys.path:
+            sys.path.insert(0, extra)
+
+_init_sumo_environment()
 
 SUMO_DIR = Path(__file__).parent / "sumo"
 SUMOCFG = SUMO_DIR / "simulation.sumocfg"
@@ -60,15 +90,20 @@ def _find_sumo_binary(gui: bool = False) -> Optional[str]:
         found = shutil.which(c)
         if found:
             return found
+
+    # Try common Linux system binary paths
+    for p in [f"/usr/bin/{name}", f"/usr/local/bin/{name}", f"/usr/share/sumo/bin/{name}"]:
+        if os.path.exists(p) and (os.access(p, os.X_OK) or sys.platform == "win32"):
+            return p
+
     # Try SUMO_HOME
     sumo_home = os.environ.get("SUMO_HOME", "")
     if sumo_home:
-        candidate = Path(sumo_home) / "bin" / (name + ".exe")
-        if candidate.exists():
-            return str(candidate)
-        candidate = Path(sumo_home) / "bin" / name
-        if candidate.exists():
-            return str(candidate)
+        for sub in ["bin", ""]:
+            for ext in [".exe", ""]:
+                candidate = Path(sumo_home) / sub / (name + ext)
+                if candidate.exists() and (ext == ".exe" or os.access(str(candidate), os.X_OK) or sys.platform == "win32"):
+                    return str(candidate)
     return None
 
 
@@ -78,21 +113,93 @@ def _find_free_port() -> int:
         return s.getsockname()[1]
 
 
-def is_sumo_available() -> bool:
-    return _find_sumo_binary(gui=False) is not None
-
-
 # ---------------------------------------------------------------------------
-# TraCI import (optional)
+# TraCI import (with automatic recovery)
 # ---------------------------------------------------------------------------
 
 try:
     import traci
     import traci.constants as tc
     TRACI_AVAILABLE = True
-except ImportError:
+except Exception as _e:
     TRACI_AVAILABLE = False
-    logger.warning("traci not importable — will use MockSumoRunner.")
+    logger.warning(f"traci not importable ({_e}) — will use MockSumoRunner.")
+
+
+_SUMO_VERIFIED: Optional[bool] = None
+
+def is_sumo_available(force_recheck: bool = False) -> bool:
+    """Return True only if both the SUMO binary is found AND traci is importable."""
+    global _SUMO_VERIFIED
+    if _SUMO_VERIFIED is not None and not force_recheck:
+        return _SUMO_VERIFIED
+
+    has_bin = _find_sumo_binary(gui=False) is not None
+    _SUMO_VERIFIED = bool(has_bin and TRACI_AVAILABLE)
+    return _SUMO_VERIFIED
+
+
+def verify_sumo_runtime(test_connection: bool = False) -> dict:
+    """
+    Lightweight startup verification that inspects and reports SUMO and TraCI availability.
+    If test_connection is True, performs a quick probe to confirm TraCI socket communication.
+    """
+    global _SUMO_VERIFIED
+    binary = _find_sumo_binary(gui=False)
+    gui_binary = _find_sumo_binary(gui=True)
+    sumo_home = os.environ.get("SUMO_HOME", "")
+
+    version_str = "unknown"
+    if binary:
+        try:
+            res = subprocess.run([binary, "--version"], capture_output=True, text=True, timeout=5)
+            first_line = res.stdout.strip().split("\n")[0] if res.stdout else ""
+            if first_line:
+                version_str = first_line
+        except Exception as e:
+            version_str = f"error: {e}"
+
+    traci_mod = sys.modules.get("traci")
+    traci_loc = getattr(traci_mod, "__file__", "not loaded") if TRACI_AVAILABLE else "not available"
+
+    result = {
+        "sumo_binary": binary,
+        "sumo_gui_binary": gui_binary,
+        "sumo_version": version_str,
+        "sumo_home": sumo_home,
+        "traci_available": TRACI_AVAILABLE,
+        "traci_location": traci_loc,
+        "connection_test": "not_tested",
+        "ready": False,
+    }
+
+    if binary and TRACI_AVAILABLE:
+        if test_connection:
+            try:
+                probe_runner = SumoRunner(seed=123)
+                probe_runner.start()
+                probe_runner.step(1)
+                st = probe_runner.get_state()
+                probe_runner.stop()
+                if st and st.get("sim_time", 0) > 0:
+                    result["connection_test"] = "passed"
+                    result["ready"] = True
+                    _SUMO_VERIFIED = True
+                else:
+                    result["connection_test"] = "invalid_state"
+                    result["ready"] = False
+                    _SUMO_VERIFIED = False
+            except Exception as e:
+                result["connection_test"] = f"failed: {e}"
+                result["ready"] = False
+                _SUMO_VERIFIED = False
+        else:
+            result["ready"] = True
+            _SUMO_VERIFIED = True
+    else:
+        _SUMO_VERIFIED = False
+
+    return result
 
 
 # ---------------------------------------------------------------------------

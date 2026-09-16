@@ -11,6 +11,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     DEBIAN_FRONTEND=noninteractive \
     SUMO_HOME=/usr/share/sumo \
+    PYTHONPATH="/usr/share/sumo/tools:/app:${PYTHONPATH}" \
     PATH="/usr/share/sumo/bin:${PATH}" \
     PORT=8000
 

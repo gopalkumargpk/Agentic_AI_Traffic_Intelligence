@@ -46,14 +46,25 @@ def check_python():
 
 
 def check_sumo():
-    sumo = shutil.which("sumo") or shutil.which("sumo.exe")
-    if sumo:
-        print(f"  SUMO:  [OK] {sumo}")
-        return True
-    else:
-        print("  SUMO:  [--] NOT FOUND -- Mock simulation will be used")
-        print("         Install from: https://sumo.dlr.de/docs/Downloads.php")
-        return False
+    try:
+        from simulation.sumo_runner import verify_sumo_runtime
+        diag = verify_sumo_runtime(test_connection=False)
+        if diag.get("ready"):
+            print(f"  SUMO:  [OK] {diag.get('sumo_binary')} ({diag.get('sumo_version')})")
+            print(f"  TraCI: [OK] {diag.get('traci_location')}")
+            return True
+        else:
+            print(f"  SUMO:  [--] Partial/Missing (binary: {diag.get('sumo_binary')}, traci: {diag.get('traci_available')})")
+            print("         Mock simulation will be used as fallback.")
+            return False
+    except Exception as e:
+        sumo = shutil.which("sumo") or shutil.which("sumo.exe")
+        if sumo:
+            print(f"  SUMO:  [OK] {sumo}")
+            return True
+        else:
+            print(f"  SUMO:  [--] NOT FOUND ({e}) -- Mock simulation will be used")
+            return False
 
 
 def check_node():
